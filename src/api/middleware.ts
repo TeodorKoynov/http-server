@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
 import { respondWithError } from "./json.js";
-import { BadRequestError, NotFoundError, UserForbiddenError, UserNotAuthenticatedError } from "./errors";
+import { BadRequestError, NotFoundError, UserForbiddenError, UserNotAuthenticatedError } from "./errors.js";
 
 export function middlewareLogResponse(
     req: Request,
