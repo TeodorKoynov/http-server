@@ -1,24 +1,29 @@
 import type { Request, Response } from "express";
 
 import { respondWithJSON } from "./json.js";
-import {BadRequestError, NotFoundError} from "./errors.js";
+import {BadRequestError, NotFoundError, UserNotAuthenticatedError} from "./errors.js";
 import {createChirp, getAllChirps, getChirpById} from "../db/queries/chirps.js";
+import {getBearerToken, validateJWT} from "../auth.js";
+import {config} from "../config.js";
 
 const BANNED_WORDS = ['kerfuffle', 'sharbert', 'fornax']
 const REPLACEMENT_WORD = "****"
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
-        userId: string;
         body: string;
     }
     const params: parameters = req.body
 
-    if (!params.body || !params.userId) {
+    if (!params.body) {
         throw new BadRequestError("Missing required fields")
     }
+
+    const token = getBearerToken(req)
+    const userId = validateJWT(token, config.jwt.secret)
+
     const cleanBody = validateChirp(params.body)
-    const chirp = await createChirp({ body: cleanBody, userId: params.userId })
+    const chirp = await createChirp({ userId, body: cleanBody })
 
     if (!chirp) {
         throw new Error("Could not create chirp");

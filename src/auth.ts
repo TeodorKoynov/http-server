@@ -1,6 +1,7 @@
 import argon2 from "argon2"
+import type { Request } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import {UserNotAuthenticatedError} from "./api/errors.js";
+import {BadRequestError, UserNotAuthenticatedError} from "./api/errors.js";
 
 const TOKEN_ISSUER = "chirpy";
 
@@ -53,4 +54,21 @@ export function validateJWT(tokenString: string, secret: string) {
     }
 
     return decoded.sub;
+}
+
+export function getBearerToken(req: Request): string {
+    const authHeader = req.get("Authorization")
+    if (!authHeader) {
+        throw new BadRequestError("Malformed authorization header");
+    }
+
+    return extractBearerToken(authHeader);
+}
+
+export function extractBearerToken(header: string) {
+    const [scheme, token] = header.split(" ");
+    if (scheme !== "Bearer" || !token) {
+        throw new BadRequestError("Malformed authorization header");
+    }
+    return token;
 }
