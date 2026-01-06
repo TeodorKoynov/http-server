@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: chirpy-db
+    environment:
+      POSTGRES_USER: chirpy
+      POSTGRES_PASSWORD: chirpy
+      POSTGRES_DB: chirpy
+    ports:
+      - "5432:5432"
+    volumes:
+      - chirpy-data:/var/lib/postgresql/data
+
+volumes:
+  chirpy-data:
