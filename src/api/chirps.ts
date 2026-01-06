@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 
 import { respondWithJSON } from "./json.js";
-import { BadRequestError } from "./errors.js";
-import {createChirp, getAllChirps} from "../db/queries/chirps.js";
+import {BadRequestError, NotFoundError} from "./errors.js";
+import {createChirp, getAllChirps, getChirpById} from "../db/queries/chirps.js";
 
 const BANNED_WORDS = ['kerfuffle', 'sharbert', 'fornax']
 const REPLACEMENT_WORD = "****"
@@ -54,4 +54,15 @@ function getCleanedBody(body: string) {
 export async function handlerChirpsGet(_req: Request, res: Response) {
     const chirps = await getAllChirps();
     return respondWithJSON(res, 200, chirps);
+}
+
+export async function handlerChirpGet(req: Request, res: Response) {
+    const { chirpId } = req.params;
+
+    const chirp = await getChirpById(chirpId);
+    if (!chirp) {
+        throw new NotFoundError(`Chirp with chirpId: ${chirpId} not found`);
+    }
+
+    return respondWithJSON(res, 200, chirp);
 }
