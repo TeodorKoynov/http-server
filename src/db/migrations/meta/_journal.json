@@ -8,6 +8,13 @@
       "when": 1767715502830,
       "tag": "0000_powerful_stepford_cuckoos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767718611797,
+      "tag": "0001_long_vampiro",
+      "breakpoints": true
     }
   ]
 }

@@ -2,22 +2,42 @@ import type { Request, Response } from "express";
 
 import { respondWithJSON } from "./json.js";
 import { BadRequestError } from "./errors.js";
+import {createChirp} from "../db/queries/chirps.js";
 
 const BANNED_WORDS = ['kerfuffle', 'sharbert', 'fornax']
 const REPLACEMENT_WORD = "****"
 
-export async function handlerChirpsValidate(req: Request, res: Response) {
+export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
+        userId: string;
         body: string;
-    };
+    }
+    const params: parameters = req.body
 
-    const params: parameters = req.body;
+    if (!params.body || !params.userId) {
+        throw new BadRequestError("Missing required fields")
+    }
+    const cleanBody = validateChirp(params.body)
+    const chirp = await createChirp({ body: cleanBody, userId: params.userId })
 
+    if (!chirp) {
+        throw new Error("Could not create chirp");
+    }
+
+    return respondWithJSON(res, 201, chirp);
+}
+
+function validateChirp(body: string) {
     const maxChirpLength = 140;
-    if (params.body.length > maxChirpLength) {
+    if (body.length > maxChirpLength) {
         throw new BadRequestError(`Chirp is too long. Max length is ${maxChirpLength}`);
     }
-    const words = params.body.split(" ");
+
+    return getCleanedBody(body);
+}
+
+function getCleanedBody(body: string) {
+    const words = body.split(" ");
 
     for (let i = 0; i < words.length; i++) {
         const word = words[i];
@@ -28,8 +48,6 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
     }
 
     const cleanedBody = words.join(" ");
-
-    respondWithJSON(res, 200, {
-        cleanedBody,
-    });
+    return cleanedBody;
 }
+
