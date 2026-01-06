@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
-import { NotFoundError } from "./errors.js";
+import {NotFoundError, UserNotAuthenticatedError} from "./errors.js";
 import { upgradeToChirpyRed } from "../db/queries/users.js";
+import {getAPIKey} from "../auth.js";
+import {config} from "../config.js";
 
 export async function handlerPolkaWebhook(req: Request, res: Response) {
     type parameters = {
@@ -9,6 +11,11 @@ export async function handlerPolkaWebhook(req: Request, res: Response) {
             userId: string;
         };
     };
+
+    const apiKey = getAPIKey(req)
+    if (apiKey !== config.api.polkaApiKey) {
+        throw new UserNotAuthenticatedError("Invalid API key");
+    }
 
     const params: parameters = req.body;
 
