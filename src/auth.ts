@@ -1,6 +1,7 @@
 import argon2 from "argon2"
 import type { Request } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
+import crypto from "crypto";
 import {BadRequestError, UserNotAuthenticatedError} from "./api/errors.js";
 
 const TOKEN_ISSUER = "chirpy";
@@ -71,4 +72,8 @@ export function extractBearerToken(header: string) {
         throw new BadRequestError("Malformed authorization header");
     }
     return token;
+}
+
+export function makeRefreshToken() {
+    return crypto.randomBytes(32).toString("hex");
 }

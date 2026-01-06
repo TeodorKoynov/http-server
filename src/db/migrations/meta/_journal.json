@@ -29,6 +29,13 @@
       "when": 1767734445384,
       "tag": "0003_clear_silver_samurai",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1767738919000,
+      "tag": "0004_little_kulan_gath",
+      "breakpoints": true
     }
   ]
 }
