@@ -10,6 +10,7 @@ import { handlerReset } from "./api/reset.js";
 import { handlerChirpsCreate, handlerChirpsGet, handlerChirpGet, handlerChirpDelete } from "./api/chirps.js";
 import { handlerUsersCreate, handlerUsersUpdate } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
+import { handlerPolkaWebhook } from "./api/polka.js";
 import {config} from "./config.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -60,6 +61,10 @@ app.get("/api/chirps/:chirpId", (req, res, next) => {
 });
 app.delete("/api/chirps/:chirpId", (req, res, next) => {
     Promise.resolve(handlerChirpDelete(req, res)).catch(next);
+});
+
+app.post("/api/polka/webhooks", (req, res, next) => {
+    Promise.resolve(handlerPolkaWebhook(req, res)).catch(next);
 });
 
 app.use(errorMiddleWare);
