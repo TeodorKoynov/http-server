@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 
 import { respondWithJSON } from "./json.js";
 import { BadRequestError } from "./errors.js";
-import {createChirp} from "../db/queries/chirps.js";
+import {createChirp, getAllChirps} from "../db/queries/chirps.js";
 
 const BANNED_WORDS = ['kerfuffle', 'sharbert', 'fornax']
 const REPLACEMENT_WORD = "****"
@@ -51,3 +51,7 @@ function getCleanedBody(body: string) {
     return cleanedBody;
 }
 
+export async function handlerChirpsGet(_req: Request, res: Response) {
+    const chirps = await getAllChirps();
+    return respondWithJSON(res, 200, chirps);
+}
