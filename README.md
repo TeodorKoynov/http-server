@@ -28,15 +28,10 @@ A Twitter-like HTTP API server built with TypeScript, Express 5, and PostgreSQL.
    ```
 
 3. **Configure environment**
-
-   Create a `.env` file:
+   ```bash
+   cp .env.example .env
    ```
-   PORT=8080
-   PLATFORM=dev
-   DB_URL=postgresql://chirpy:chirpy@localhost:5432/chirpy
-   JWT_SECRET=your-secret-key
-   POLKA_API_KEY=your-polka-api-key
-   ```
+   Then edit `.env` with your values.
 
 4. **Run migrations**
    ```bash
