@@ -56,8 +56,18 @@ function getCleanedBody(body: string) {
     return cleanedBody;
 }
 
-export async function handlerChirpsGet(_req: Request, res: Response) {
-    const chirps = await getAllChirps();
+export async function handlerChirpsGet(req: Request, res: Response) {
+    let authorId: string | undefined;
+    if (typeof req.query.authorId === "string") {
+        authorId = req.query.authorId;
+    }
+
+    let sort: "asc" | "desc" = "asc";
+    if (req.query.sort === "desc") {
+        sort = "desc";
+    }
+
+    const chirps = await getAllChirps(authorId, sort);
     return respondWithJSON(res, 200, chirps);
 }
 
