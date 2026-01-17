@@ -2,48 +2,47 @@
 
 A Twitter-like HTTP API server built with TypeScript, Express 5, and PostgreSQL.
 
-## Features
-
+**Features:**
 - User authentication with JWT access tokens and refresh tokens
 - Password hashing with Argon2
 - CRUD operations for chirps (posts)
 - Chirpy Red premium membership via webhook integration
-- Content moderation (banned words filtering)
+- Content moderation with banned words filtering
 
-## Prerequisites
+## Motivation
 
-- Node.js 20+
-- Docker (for PostgreSQL)
+I built Chirpy to learn backend development patterns the hard way - by implementing them from scratch. Instead of reaching for Firebase Auth or Auth0, I rolled my own JWT-based authentication with refresh token rotation. Instead of using a managed database, I set up PostgreSQL with Drizzle ORM and wrote my own migrations.
 
-## Setup
+The goal was to understand what happens under the hood of production APIs: token expiration, password hashing, webhook verification, and content moderation. Chirpy is the result of that exploration.
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Quick Start
 
-2. **Start the database**
-   ```bash
-   docker compose up -d
-   ```
+**Prerequisites:** Node.js 20+ and Docker
 
-3. **Configure environment**
-   ```bash
-   cp .env.example .env
-   ```
-   Then edit `.env` with your values.
+```bash
+# Clone and install
+git clone https://github.com/yourusername/chirpy.git
+cd chirpy
+npm install
 
-4. **Run migrations**
-   ```bash
-   npm run migrate
-   ```
+# Start PostgreSQL and run migrations
+docker compose up -d
+cp .env.example .env
+npm run migrate
 
-5. **Start the server**
-   ```bash
-   npm run dev
-   ```
+# Start the server
+npm run dev
+```
 
-## Scripts
+The server runs on `http://localhost:8080`. Hit the health check to verify:
+
+```bash
+curl http://localhost:8080/api/healthz
+```
+
+## Usage
+
+### Scripts
 
 | Command | Description |
 |---------|-------------|
@@ -54,30 +53,64 @@ A Twitter-like HTTP API server built with TypeScript, Express 5, and PostgreSQL.
 | `npm run generate` | Generate Drizzle migrations |
 | `npm run migrate` | Apply database migrations |
 
-## API Endpoints
+### API Endpoints
 
-### Health
+#### Health
 - `GET /api/healthz` - Health check
 
-### Authentication
+#### Authentication
 - `POST /api/users` - Create user
 - `PUT /api/users` - Update user (authenticated)
 - `POST /api/login` - Login
 - `POST /api/refresh` - Refresh access token
 - `POST /api/revoke` - Revoke refresh token
 
-### Chirps
+#### Chirps
 - `POST /api/chirps` - Create chirp (authenticated)
 - `GET /api/chirps` - List chirps (`?authorId=`, `?sort=asc|desc`)
 - `GET /api/chirps/:chirpId` - Get chirp
 - `DELETE /api/chirps/:chirpId` - Delete chirp (authenticated, owner only)
 
-### Webhooks
+#### Webhooks
 - `POST /api/polka/webhooks` - Polka payment webhook
 
-### Admin
+#### Admin
 - `GET /admin/metrics` - View metrics
 - `POST /admin/reset` - Reset data
+
+## Contributing
+
+### Clone the repo
+
+```bash
+git clone https://github.com/yourusername/chirpy.git
+cd chirpy
+```
+
+### Set up the development environment
+
+```bash
+npm install
+docker compose up -d
+cp .env.example .env
+npm run migrate
+```
+
+### Run the test suite
+
+```bash
+npm run test
+```
+
+### Build and run
+
+```bash
+npm run dev
+```
+
+### Submit a pull request
+
+If you'd like to contribute, please fork the repository and open a pull request to the `main` branch.
 
 ## Tech Stack
 
